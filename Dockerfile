@@ -3,6 +3,16 @@ FROM ruby:2.6.1-stretch
 # アプリケーションを配置するディレクトリ
 WORKDIR /app
 
+# Node.jsのv10系列とyarnの安定版をインストールする
+RUN curl -sSSL https://deb.nodesource.com/setup_10.x | bash - \
+    && curl -sSSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y \
+       nodejs \
+       yarn \
+    && rm -rf /var/lib/apt/lists/*
+
 # Bundlerでgemをインストールする
 ARG BUNDLE_INSTALL_ARGS="-j 4"
 COPY Gemfile Gemfile.lock ./
